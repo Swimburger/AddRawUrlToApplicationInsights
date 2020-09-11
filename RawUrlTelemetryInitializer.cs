@@ -12,7 +12,13 @@ namespace AddRawUrlToApplicationInsights
         {
             if (telemetry is RequestTelemetry requestTelemetry)
             {
-                var request = HttpContext.Current.Request;
+                var httpContext = HttpContext.Current;
+                if (httpContext?.Request == null)
+                {
+                    return;
+                }
+
+                var request = httpContext.Request;
                 requestTelemetry.Properties["RawUrl"] = request.RawUrl;
                 requestTelemetry.Properties["RawUrlFqdn"] = new Uri(request.Url, request.RawUrl).ToString();
             }
